@@ -452,6 +452,7 @@ int main(int argv, char* argc[])
 		fOldX = fBallPos[0];
 		fOldY = fBallPos[1];
 	
+		//If yhe ball gets past the player. Reset the ball position, speed and plus one to deaths. Also sets the boolean up to true
 		if (fBallPos[1] < 0)
 		{
 			deaths++;
@@ -460,8 +461,8 @@ int main(int argv, char* argc[])
 			fBallPos[1] = 150.0f;
 			up = true;
 		}
+		//Detecting the ball bouncing of the walls and changing its direction depending where it came from
 		else if (fBallPos[0] < 20)
-		//if (UG::IsKeyDown(UG::KEY_Z))
 		{
 			fBallPos[0] += fBallDX * fSpeed;
 			fBallPos[1] += fBallDY * fSpeed;
@@ -503,15 +504,7 @@ int main(int argv, char* argc[])
 			}			
 		}
 
-		/*cout << "BallAngle: " << fAng << "\n";
-		cout << "BallX: " << fBallPos[0] << "\n";
-		cout << "BallY: " << fBallPos[1] <<  "\n";
-		cout << "DX: " << fBallDX << "\n";
-		cout << "DX: " << fBallDY << "\n\n\n";*/
-
-		//cout << fPlayerPos[0] << ", " << fPlayerPos[1] << "\n";
-		//cout << round(fBallPos[0]) << ", " << round(fBallPos[1]) << "\n";
-
+		//Setting up the points on the ball to detect collision with it where ever it is
 		int iBallCollidingPointsX[11]=
 		{
 			round(fBallPos[0]) - 5,
@@ -541,6 +534,7 @@ int main(int argv, char* argc[])
 			round(fBallPos[1]) + 5
 		};
 
+		//Setting up the points on the player to detect collision with it where ever it is
 		int iPlayerCollidingPointsX[60] =
 		{
 			round(fPlayerPos[0]) - -30,
@@ -605,62 +599,39 @@ int main(int argv, char* argc[])
 			round(fPlayerPos[0]) + 29
 		};
 
+		//Setting up an in for the player rebound
 		int iPlayerRebound;
+		//Making sure the player does not leave the screen
 		if ((fBallPos[1] < 60) && (fBallPos[1] > 40) )
 		{
+			//For loop to detect if the ball collides with the player
 			for (int i = 0; i < 60; i++)
 			{
 				iPlayerRebound = iPlayerCollidingPointsX[i];
-				//cout << iPlayerRebound << "\n";
 				if (iPlayerRebound == round(fBallPos[0]))
 				{
-					//cout << "PlayerX: " << iPlayerRebound << "  ||  BallX: " << round(fBallPos[0]) << "\n";
-
+					//Checking if the player is moving upon collision
 					if (UG::IsKeyDown(UG::KEY_A) || UG::IsKeyDown(UG::KEY_D))
 					{
+						//If the player is moving the ball has a chance to get quicker in speed
 						int r = rand() % 2 + 1;
 						if (r = 1)
 						{
 							fSpeed = rand() % 5 + (fSpeed);
 						}
 					}
+					//If the player is not moving the ball will return to normal speed
 					else {
 						fSpeed = 4.0f;
 					}
+					//Setting up to true so the ball moves back up upon collison
 					up = true;
 				}
 			}
 		}
 		
-		/*int iBX = 0;
-		int iBY = 0;
-		int iBL = 0;
-		
-		for (int l = 0; l < 88; l++)
-		{
-			for (int k = 0; k < 8; k++)
-			{
-				for (int j = 0; j < 11; j++)
-				{
-					iBX = fBlockX[j];
-					iBY = fBlockY[k];
-					if (round(fBallPos[0]) > (iBX - 40) && round(fBallPos[0]) < (iBX + 40) &&
-						round(fBallPos[1]) < (iBY + 22) && round(fBallPos[1]) > (iBY - 22))
-					{
-						iBL = iBricks[l];
-						UG::DestroySprite(iBL);
-						up = false;
-					}
-				}
-			}
-		}
-		cout << "iBL: " << iBL << "\n";
-		cout << "iBX: " << iBX << "\n";
-		cout << "iBY: " << iBY << "\n\n\n";*/
-
-		//Playing a sound for every block that has been destroyed
-
-
+		//This is checking what bricks can be collided with and giving them their colliding points. Upon colliding a basic sound will be played and the brick 
+		//	will be destroyed sending the ball in the returning direction setting the brick hit to false
 		// Bottom Row (Yellow)
 		if (bIsDetectable[87])
 		{
@@ -2349,20 +2320,8 @@ int main(int argv, char* argc[])
 			}
 		}
 
-
-		/*for (int p = 0; p < 22; p++)
-		{
-			if (p == 0)
-			{
-				cout << "####################\n####################\n####################\n####################\n";
-			}
-			cout << p << ": " << bIsDetectable[(p)] << "  #  " << p+22 << ": " << bIsDetectable[(p+22)] << "   #   " << p + 44 << ": " << bIsDetectable[(p+44)] << "   #   " << p+66 << ": " << bIsDetectable[(p+66)] << "\n";
-			if (p == 21)
-			{
-				cout << "####################\n####################\n####################\n####################\n";
-			}
-		}*/
-
+		//Checking the counter against the score to see if a new int sprite needs to be rendered. If the 1st array 's' supresses 10 it will be reset
+		//	and the next unit along will have plus 1 rendering the next unit across
 		if (s >= 10)
 		{
 			s = (s-=10);
@@ -2378,9 +2337,6 @@ int main(int argv, char* argc[])
 			s2 = (s2-=10);
 		}
 
-		//cout << s2 << s1 << s << "\n";
-
-		//cout << "BallX: " << round(fBallPos[0]) << "  ||  Block88X: " << fBlockX[10] << "\n";
 
 		//The left and right movement of the player
 		if (UG::IsKeyDown(UG::KEY_A))
@@ -2400,12 +2356,10 @@ int main(int argv, char* argc[])
 			}
 		}
 
+		//If the deaths equal 4 the player will die and the end screen will be shown
 		if (deaths == 4)
 		{
 			fSpeed = 0.0f;
-			/*fBallPos[0] = 512.0f;
-			fBallPos[1] = 150.0f;
-			up = true;*/
 			UG::SetSpritePosition(iEndScreen, (g_iScreenWidth/2), (g_iScreenHeight/2));
 			UG::DrawSprite(iEndScreen);
 			UG::SetSpritePosition(score1[s], ((g_iScreenWidth / 2) + 51), (g_iScreenHeight / 2));
@@ -2415,10 +2369,6 @@ int main(int argv, char* argc[])
 			UG::DrawSprite(score2[s1]);
 			UG::DrawSprite(score3[s2]);
 		}
-		
-
-		/*fPlayerPos[0] = fBallPos[0];
-		UG::SetSpritePosition(iPlayer, fPlayerPos[0], fPlayerPos[1]);*/
 
 		// Quit our application when escape is pressed
 		if (UG::IsKeyDown(UG::KEY_ESCAPE))
